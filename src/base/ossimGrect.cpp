@@ -321,3 +321,27 @@ void ossimGrect::expandToInclude(const ossimGrect& rect)
    expandToInclude(rect.ul());
    expandToInclude(rect.lr());
 }
+
+std::string ossimGrect::toString(ossim_uint32 precision) const
+{
+   std::string result = theUlCorner.toString( precision ).string();
+   result += ",";
+   result += theLrCorner.toString( precision ).string();
+   return result;
+}
+
+bool ossimGrect::toRect(const std::string& s)
+{
+   bool result = true;
+   char c = ',';
+   std::string::size_type found = s.find(c);
+   if ( found != std::string::npos )
+   {
+      std::string ul = s.substr( 0, found );
+      std::string lr = s.substr( found+1, s.size()-(found+1) );
+      theUlCorner.toPoint(ul);
+      theLrCorner.toPoint(lr);
+      result = true;
+   }
+   return result;
+}

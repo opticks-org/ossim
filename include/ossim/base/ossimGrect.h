@@ -164,6 +164,22 @@ public:
                          double latSpacingInDegrees,
                          double lonSpacingInDegrees,
                          bool clipToGeographicBounds = true)const;
+
+   /**
+    * @brief Get the rect as a string.
+    *
+    * Format is two ossimGpts:
+    * (ul), (lr)
+    * ( 30.0, -90.0, 0.0, WGE ),( 29.0, -89.0, 0.0, WGE )
+    * (  lat,  lon, hgt, datum),( lat, lon, hgt, datum),
+    */
+   std::string toString(ossim_uint32 precision=15) const;
+
+   /**
+    * Initializes this rect from string.
+    */
+   bool toRect(const std::string& s);
+
 private:
    ossimGpt theUlCorner; // Contains max height as well
    ossimGpt theLrCorner; // Contains min height as well
