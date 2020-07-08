@@ -21,7 +21,7 @@
 #include <cmath>
 #include <ostream>
 
-#define TRACE_TIME 1 /* For function level time stats. */
+#define TRACE_TIME 0 /* For function level time stats. */
 #if TRACE_TIME
 #  include <ossim/base/ossimStopwatch.h>
 #endif
