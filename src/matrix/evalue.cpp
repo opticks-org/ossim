@@ -280,7 +280,7 @@ static void tql1(DiagonalMatrix& D, DiagonalMatrix& E)
    }
 }
 
-void EigenValues(const SymmetricMatrix& A, DiagonalMatrix& D, Matrix& Z)
+OSSIMDLLEXPORT void EigenValues(const SymmetricMatrix& A, DiagonalMatrix& D, Matrix& Z)
 { REPORT DiagonalMatrix E; tred2(A, D, E, Z); tql2(D, E, Z); SortSV(D,Z,true); }
 
 void EigenValues(const SymmetricMatrix& X, DiagonalMatrix& D)

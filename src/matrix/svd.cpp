@@ -23,7 +23,7 @@ namespace NEWMAT {
 
 
 
-void SVD(const Matrix& A, DiagonalMatrix& Q, Matrix& U, Matrix& V,
+OSSIMDLLEXPORT void SVD(const Matrix& A, DiagonalMatrix& Q, Matrix& U, Matrix& V,
    bool withU, bool withV)
 // from Wilkinson and Reinsch: "Handbook of Automatic Computation"
 {
@@ -196,6 +196,54 @@ void SVD(const Matrix& A, DiagonalMatrix& Q, Matrix& U, Matrix& V,
 void SVD(const Matrix& A, DiagonalMatrix& D)
 { REPORT Matrix U; SVD(A, D, U, U, false, false); }
 
+OSSIMDLLEXPORT void SVDSolve(ColumnVector& result, const Matrix& lhsMatrix, const ColumnVector& rhsVector)
+{
+	// Declare variables used by SVD.
+	Matrix columnMatrix;
+	Matrix orthogonalMatrix;
+	DiagonalMatrix singularValuesMatrix(lhsMatrix.Ncols());
+
+	// Perform the SVD and solve the equation.
+	SVD(lhsMatrix, singularValuesMatrix, columnMatrix, orthogonalMatrix, true, true);
+	SVDBKSB(result, rhsVector, singularValuesMatrix, columnMatrix, orthogonalMatrix);
+}
+
+OSSIMDLLEXPORT void SVDBKSB(ColumnVector& result, const ColumnVector& rhsVector,
+	const DiagonalMatrix& singularValuesMatrix, const Matrix& columnMatrix, const Matrix& orthogonalMatrix)
+{
+	// Make sure that resultMatrix is the appropriate size.
+	const int numRowsResult = columnMatrix.Ncols();
+	result.ReSize(numRowsResult);
+
+	// Compute all elements in temp.
+	ColumnVector temp(numRowsResult);
+	for (int col = 0; col < columnMatrix.Ncols(); ++col)
+	{
+		double solutionValue = 0.0;
+		if (singularValuesMatrix.element(col) != 0.0)
+		{
+			for (int row = 0; row < rhsVector.Nrows(); ++row)
+			{
+				solutionValue += columnMatrix.element(row, col) * rhsVector.element(row);
+			}
+
+			solutionValue /= singularValuesMatrix.element(col);
+		}
+
+		temp.element(col) = solutionValue;
+	}
+
+	for (int col = 0; col < orthogonalMatrix.Ncols(); ++col)
+	{
+		double solutionValue = 0.0;
+		for (int col2 = 0; col2 < orthogonalMatrix.Ncols(); ++col2)
+		{
+			solutionValue += orthogonalMatrix.element(col, col2) * temp.element(col2);
+		}
+
+		result.element(col) = solutionValue;
+	}
+}
 
 
 #ifdef use_namespace

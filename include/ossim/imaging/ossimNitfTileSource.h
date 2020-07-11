@@ -221,6 +221,9 @@ public:
    ossimNitfFile *getNitfFile();
    const ossimNitfFile *getNitfFile()const;
 
+   bool getExpandLut() const;
+   void setExpandLut(bool expandFlag);
+
    /**
     * @return The image header for the current entry.
     */
@@ -549,6 +552,9 @@ protected:
    // prior to grabbing a block.
    //---
    bool m_jpegOffsetsDirty;
+
+   bool                          theExpandLutFlag;
+
    
 TYPE_DATA
 };

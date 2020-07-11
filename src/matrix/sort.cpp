@@ -187,7 +187,7 @@ static void MyQuickSortAscending(Real* first, Real* last, int depth)
 // sorts that handle exchange of columns better
 // however time is probably not significant compared with SVD time
 
-void SortSV(DiagonalMatrix& D, Matrix& U, bool ascending)
+OSSIMDLLEXPORT void SortSV(DiagonalMatrix& D, Matrix& U, bool ascending)
 {
    REPORT
    Tracer trace("SortSV_DU");

@@ -115,7 +115,8 @@ ossimNitfTileSource::ossimNitfTileSource()
       theCompressedBuf(0),
       theNitfBlockOffset(0),
       theNitfBlockSize(0),
-      m_jpegOffsetsDirty(false)
+      m_jpegOffsetsDirty(false),
+	  theExpandLutFlag(true)
 {
    if (traceDebug())
    {
@@ -1810,7 +1811,7 @@ bool ossimNitfTileSource::loadBlock(ossim_uint32 x, ossim_uint32 y)
          {
             ossim_uint8* buf =0;
             if(isVqCompressed(hdr->getCompressionCode())||
-               hdr->getRepresentation().upcase().contains("LUT"))
+               hdr->getRepresentation().upcase().contains("LUT") && theExpandLutFlag)
             {
                buf = (ossim_uint8*)&(theCompressedBuf.front());
             }
@@ -1842,7 +1843,7 @@ bool ossimNitfTileSource::loadBlock(ossim_uint32 x, ossim_uint32 y)
                   vqUncompressM4(theCacheTile,
                                  (ossim_uint8*)&(theCompressedBuf.front()));
                }
-               else if(hdr->getRepresentation().upcase().contains("LUT"))
+               else if(hdr->getRepresentation().upcase().contains("LUT") && theExpandLutFlag)
                {
                   lutUncompress(theCacheTile,
                                 (ossim_uint8*)&(theCompressedBuf.front()));
@@ -3751,4 +3752,14 @@ ossimNitfTileSource& ossimNitfTileSource::operator=(
    const ossimNitfTileSource& /* rhs */)
 {
    return *this;
+}
+
+bool ossimNitfTileSource::getExpandLut() const
+{
+	return theExpandLutFlag;
+}
+
+void ossimNitfTileSource::setExpandLut(bool expandFlag)
+{
+	theExpandLutFlag = expandFlag;
 }

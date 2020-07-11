@@ -57,8 +57,11 @@ void RightCircularUpdateCholesky(UpperTriangularMatrix &chol, int k, int l);
 // 1,...,k-1,k+1,...l,k,l+1,...,p to
 void LeftCircularUpdateCholesky(UpperTriangularMatrix &chol, int k, int l); 
 
+OSSIMDLLEXPORT void SVDSolve(ColumnVector& result, const Matrix& lhsMatrix, const ColumnVector& rhsVector);
+OSSIMDLLEXPORT void SVDBKSB(ColumnVector& result, const ColumnVector& rhsVector,
+	const DiagonalMatrix& singularValuesMatrix, const Matrix& columnMatrix, const Matrix& orthogonalMatrix);
 
-void SVD(const Matrix&, DiagonalMatrix&, Matrix&, Matrix&,
+OSSIMDLLEXPORT void SVD(const Matrix&, DiagonalMatrix&, Matrix&, Matrix&,
     bool=true, bool=true);
 
 void SVD(const Matrix&, DiagonalMatrix&);
@@ -66,7 +69,7 @@ void SVD(const Matrix&, DiagonalMatrix&);
 inline void SVD(const Matrix& A, DiagonalMatrix& D, Matrix& U,
    bool withU = true) { SVD(A, D, U, U, withU, false); }
 
-void SortSV(DiagonalMatrix& D, Matrix& U, bool ascending = false);
+OSSIMDLLEXPORT void SortSV(DiagonalMatrix& D, Matrix& U, bool ascending = false);
 
 void SortSV(DiagonalMatrix& D, Matrix& U, Matrix& V, bool ascending = false);
 
@@ -83,7 +86,7 @@ void EigenValues(const SymmetricMatrix&, DiagonalMatrix&);
 
 void EigenValues(const SymmetricMatrix&, DiagonalMatrix&, SymmetricMatrix&);
 
-void EigenValues(const SymmetricMatrix&, DiagonalMatrix&, Matrix&);
+OSSIMDLLEXPORT void EigenValues(const SymmetricMatrix&, DiagonalMatrix&, Matrix&);
 
 class SymmetricEigenAnalysis
 // not implemented yet
