@@ -13,11 +13,12 @@
 //  $Id: ossimGeoidManager.h 22900 2014-09-30 09:56:11Z dburken $
 
 #ifndef ossimGeoidManager_HEADER
-#define ossimGeoidManager_HEADER
+#define ossimGeoidManager_HEADER 1
 
-#include <vector>
 #include <ossim/base/ossimRefPtr.h>
 #include <ossim/base/ossimGeoid.h>
+#include <vector>
+
 /*****************************************************************************
  *
  * CLASS: ossimGeoidManager 
@@ -67,12 +68,32 @@ public:
     */
    virtual void addGeoid(ossimRefPtr<ossimGeoid> geoid, bool toFrontFlag=false);
 
+   /**
+    * @brief Gets the geoid for a given point. Typically first geoid in the
+    * list.
+    * @param gpt
+    * @return ossimRefPtr<ossimGeoid> which can hold null pointer if there is
+    * no coverage for the point.
+    */
+   ossimRefPtr<ossimGeoid> getGeoidForPoint( const ossimGpt& gpt );
+
    ossimGeoid* findGeoidByShortName(const ossimString& shortName, bool caseSensitive=true);
 
   /**
    * Permits to clear the GeoidList
    */
    virtual void clear();
+
+   /** @return The number of geoids loaded. */
+   ossim_uint32 getNumberOfGeoids() const;
+
+   /**
+    * @brief Gets the geoid for index.
+    * @param index
+    * @return ossimRefPtr<ossimGeoid> which can hold null pointer if the index
+    * is out of range or no geoids loaded.
+    */
+   ossimRefPtr<ossimGeoid> getGeoid( ossim_uint32 index );
 
 private:
    /**
