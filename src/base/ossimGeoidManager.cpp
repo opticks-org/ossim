@@ -1,7 +1,7 @@
 //*****************************************************************************
 // FILE: ossimGeoidManager.cpp
 //
-// License:  See top level LICENSE.txt file.
+// License: MIT
 //
 // AUTHOR: Oscar Kramer
 //
@@ -10,7 +10,7 @@
 // LIMITATIONS: None.
 //
 //*****************************************************************************
-//  $Id: ossimGeoidManager.cpp 22906 2014-09-30 17:28:52Z dburken $
+//  $Id$
 
 
 #include <ossim/base/ossimGeoidManager.h>
@@ -34,8 +34,6 @@ static ossimTrace traceExec  ("ossimGeoidManager:exec");
 static ossimTrace traceDebug ("ossimGeoidManager:debug");
 
 RTTI_DEF1(ossimGeoidManager, "ossimGeoidManager", ossimGeoid);
-
-using namespace std;
 
 //ossimGeoidManager* ossimGeoidManager::theInstance = 0;
 
@@ -133,7 +131,7 @@ bool ossimGeoidManager::loadState(const ossimKeywordlist& kwl,
    ossimString regExpression =  ossimString("^(") + geoidMgrPrefix.c_str() +
       "geoid_source[0-9]+.)";
 
-   vector<ossimString> keys = kwl.getSubstringKeyList( regExpression );
+   std::vector<ossimString> keys = kwl.getSubstringKeyList( regExpression );
    if ( keys.size() )
    {
       for ( ossim_uint32 idx = 0; idx < keys.size(); ++idx )
@@ -327,6 +325,29 @@ double ossimGeoidManager::offsetFromEllipsoid(const ossimGpt& gpt)
    return offset;
 }
 
+ossimRefPtr<ossimGeoid> ossimGeoidManager::getGeoidForPoint( const ossimGpt& gpt )
+{
+   ossimRefPtr<ossimGeoid> geoid = 0;
+   double offset = ossim::nan();
+   for ( auto&& i : theGeoidList )
+   {
+      if ( i.valid() )
+      {
+         offset = i->offsetFromEllipsoid(gpt);
+         if ( ossim::isnan( offset ) == false )
+         {
+            geoid = i;
+            break;
+         }
+      }
+   }
+   if ( ossim::isnan( offset ) )
+   {
+      geoid = theIdentityGeoid;
+   }
+   return geoid;
+}
+
 ossimGeoid* ossimGeoidManager::findGeoidByShortName(const ossimString& shortName, bool caseSensitive)
 {
    ossim_uint32 idx=0;
@@ -357,4 +378,19 @@ ossimGeoid* ossimGeoidManager::findGeoidByShortName(const ossimString& shortName
       }
    }
    return 0;
+}
+
+ossim_uint32 ossimGeoidManager::getNumberOfGeoids() const
+{
+   return (ossim_uint32)theGeoidList.size();
+}
+
+ossimRefPtr<ossimGeoid> ossimGeoidManager::getGeoid( ossim_uint32 index )
+{
+   ossimRefPtr<ossimGeoid> geoid = 0;
+   if ( theGeoidList.size() && (index < theGeoidList.size()) )
+   {
+      geoid = theGeoidList[index];
+   }
+   return geoid;
 }
